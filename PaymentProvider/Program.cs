@@ -23,7 +23,7 @@ namespace PaymentProvider
                 })
                 .Configure(app =>
                 {
-                    app.UseMvc();
+                    app.UseMvcWithDefaultRoute();
                 })
                 .Build();
         }

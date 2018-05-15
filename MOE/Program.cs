@@ -38,7 +38,7 @@ namespace MOE
                 })
                 .Configure(app =>
                 {
-                    app.UseMvc();
+                    app.UseMvcWithDefaultRoute();
                 })
                 .Build();
         }

@@ -23,7 +23,7 @@ namespace DiscountConnector
                 })
                 .Configure(app =>
                 {
-                    app.UseMvc();
+                    app.UseMvcWithDefaultRoute();
                 })
                 .Build();
         }

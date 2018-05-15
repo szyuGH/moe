@@ -23,7 +23,7 @@ namespace CustomerManagement
                 })
                 .Configure(app =>
                 {
-                    app.UseMvc();
+                    app.UseMvcWithDefaultRoute();
                 })
                 .Build();
         }
