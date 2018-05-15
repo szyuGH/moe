@@ -8,6 +8,7 @@ using System.Timers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using MOE.OrchestrationService;
 
 namespace MOE
 {
@@ -35,6 +36,7 @@ namespace MOE
                 .ConfigureServices(s =>
                 {
                     s.AddMvc();
+                    s.AddSingleton<IOrchestrationProvider, OrchestrationProvider>();
                 })
                 .Configure(app =>
                 {

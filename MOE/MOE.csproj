@@ -5,10 +5,24 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <Target Name="MakeMyDir" AfterTargets="Build">
+    <MakeDir Directories="$(OutDir)Orchestrators\" Condition="!Exists('$(OutDir)Orchestrators\')" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Orchestrators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Orchestrators\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
