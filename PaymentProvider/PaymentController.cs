@@ -13,11 +13,17 @@ namespace PaymentProvider
 
         
         [HttpPost("Pay")]
-        public int Pay(string iban, float price)
+        public int Pay([FromBody]PayDataBind db)
         {
             Thread.Sleep(2000);
             return 0;
         }
 
+
+        public struct PayDataBind
+        {
+            public string Iban;
+            public float Price;
+        }
     }
 }

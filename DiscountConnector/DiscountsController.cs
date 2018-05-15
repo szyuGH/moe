@@ -10,7 +10,7 @@ namespace DiscountConnector
     [Route("api/[controller]")]
     public class DiscountsController : Controller
     {
-        private readonly Dictionary<string, float> discounts = new Dictionary<string, float>()
+        private static readonly Dictionary<string, float> discounts = new Dictionary<string, float>()
         {
             {"AAAAEEEE", 0.5f },
             {"EEEEDDDD", 0.2f }

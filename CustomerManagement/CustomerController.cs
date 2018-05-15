@@ -10,28 +10,29 @@ namespace CustomerManagement
     [Route("api/[controller]")]
     public class CustomerController : Controller
     {
-        private ConcurrentBag<Customer> customers = new ConcurrentBag<Customer>()
+        private static ConcurrentBag<Customer> customers = new ConcurrentBag<Customer>()
         {
             new Customer(){ Id=Guid.Parse("ee267d00-afa6-4947-a567-492025a2e814"), Email="a@b.c", Name="Hans", Pin="1234" } 
         };
 
 
         [HttpPost("Auth")]
-        public bool Authenticate(Guid id, string pin)
+        public bool Authenticate([FromBody] AuthenticateDataBind db)
         {
-            return customers.FirstOrDefault(c => c.Id.Equals(id))?.Pin == pin;
+            return customers.FirstOrDefault(c => c.Id.Equals(db.Id))?.Pin == db.Pin;
         }
 
         [HttpPost("UpdateOrders")]
-        public int UpdateOrders(Guid id, int amount)
+        public int UpdateOrders([FromBody] UpdateOrdersDataBind db)
         {
-            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(id));
+            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.Id));
             if (customer == null) return -1;
-            return ++customer.Orders;
+            customer.Orders += db.Amount;
+            return customer.Orders;
         }
 
         [HttpPost("Bonus")]
-        public void Bonus(Guid id)
+        public void Bonus([FromBody]BonusDataBind db)
         {
             // check for bonus conditions
             // write mail when met
@@ -45,6 +46,24 @@ namespace CustomerManagement
             public string Name;
             public string Email;
             public int Orders = 0;
+        }
+
+
+        public struct AuthenticateDataBind
+        {
+            public Guid Id;
+            public string Pin;
+        }
+
+        public struct UpdateOrdersDataBind
+        {
+            public Guid Id;
+            public int Amount;
+        }
+
+        public struct BonusDataBind
+        {
+            public Guid Id;
         }
     }
 }
