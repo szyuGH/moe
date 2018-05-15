@@ -41,7 +41,6 @@ namespace MOE
                     app.UseMvc();
                 })
                 .Build();
-            
         }
 
         private static void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
