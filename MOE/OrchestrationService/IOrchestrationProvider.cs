@@ -8,6 +8,6 @@ namespace MOE.OrchestrationService
     {
         IEnumerable<string> GetAll();
         void Reload();
-        object Start(string orchestratorName, params object[] args);
+        object Start(string orchestratorName, Dictionary<string, object> args);
     }
 }

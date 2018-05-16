@@ -14,11 +14,14 @@ namespace MOE.OrchestrationService
 {
     public class OrchestrationProvider : IOrchestrationProvider
     {
-        private ConcurrentDictionary<string, Orchestrator> orchestrators = new ConcurrentDictionary<string, Orchestrator>();
+        private ConcurrentDictionary<string, Orchestrator> orchestrators;
         private System.Timers.Timer timer;
+        private List<OrchestrationStream> currentStreams;
 
         public OrchestrationProvider()
         {
+            orchestrators = new ConcurrentDictionary<string, Orchestrator>();
+            currentStreams = new List<OrchestrationStream>();
             Reload();
 
             timer = new System.Timers.Timer(2000);
@@ -58,8 +61,15 @@ namespace MOE.OrchestrationService
             }
         }
 
-        public object Start(string orchestratorName, params object[] args)
+        public object Start(string orchestratorName, Dictionary<string, object> args)
         {
+            if (!orchestrators.ContainsKey(orchestratorName))
+                return null;
+            OrchestrationStream oStream = new OrchestrationStream(orchestrators[orchestratorName], args);
+            currentStreams.Add(oStream);
+
+
+
             throw new NotImplementedException();
         }
         

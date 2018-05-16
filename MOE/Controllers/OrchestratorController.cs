@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MOE.OrchestrationService;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,10 +9,25 @@ namespace MOE.Controllers
     [Route("api/[controller]")]
     public class OrchestratorController : Controller
     {
-        [HttpGet("test")]
-        public string Test()
+        private IOrchestrationProvider orchestrationProvider;
+
+        public OrchestratorController(IOrchestrationProvider _orchestrationProvider)
         {
-            return "TADA";
+            orchestrationProvider = _orchestrationProvider;
+        }
+
+
+        [HttpPost("Start")]
+        public object StartOrchestrator([FromBody] StartOrchestratorDataBinding db)
+        {
+            return orchestrationProvider.Start(db.Name, db.Args);
+        }
+
+
+        public struct StartOrchestratorDataBinding
+        {
+            public string Name;
+            public Dictionary<string, object> Args;
         }
     }
 }
