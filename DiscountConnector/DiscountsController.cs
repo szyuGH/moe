@@ -16,10 +16,10 @@ namespace DiscountConnector
             {"EEEEDDDD", 0.2f }
         };
         
-        [HttpGet("{code}")]
-        public float GetDiscount(string code)
+        [HttpGet("{code}/{price}")]
+        public float GetDiscount(string code, float price)
         {
-            return discounts.FirstOrDefault(d => d.Key == code).Value;
+            return price - price * discounts.FirstOrDefault(d => d.Key == code).Value;
         }
 
     }

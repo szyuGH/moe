@@ -1,0 +1,87 @@
+﻿{
+  "Name": "Payment_OS",
+  "Version":  "1.0.0.0",
+  "OutputType": "System.Boolean, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e",
+  "Input": {
+    "cid": "System.String",
+    "pin": "System.String",
+    "discountCount": "System.String",
+    "price": "System.Single",
+    "orderCount": "System.Int32"
+  },
+  "ServiceCalls": [
+    {
+      "Id": 0,
+      "Resource": "http://localhost:5010/api/customer/auth",
+      "Type": 1,
+      "InputRedirect": [ "cid", "pin" ],
+      "StackOutput": {
+        "Item1": "iban",
+        "Item2": "System.String"
+      }
+    },
+    {
+      "Id": 1,
+      "Resource": "http://localhost:5050/api/discounts",
+      "Type": 0,
+      "InputRedirect": [ "discountCode", "price" ],
+      "StackOutput": {
+        "Item1": "price",
+        "Item2": "System.Single"
+      }
+    },
+    {
+      "Id": 2,
+      "Resource": "http://localhost:5020/api/payment/pay",
+      "Type": 1,
+      "InputRedirect": [ "iban", "price" ],
+      "StackOutput": {
+        "Item1": "payReturnCode",
+        "Item2": "System.Int32"
+      }
+    },
+    {
+      "Id": 3,
+      "Resource": "http://localhost:5010/api/customer/updateorders",
+      "Type": 1,
+      "InputRedirect": [ "cid", "orderCount" ],
+      "StackOutput": {
+        "Item1": "orderCount",
+        "Item2": "System.Int32"
+      }
+    },
+    {
+      "Id": 4,
+      "Resource": "http://localhost:5010/api/customer/bonus",
+      "Type": 1,
+      "InputRedirect": [ "cid" ],
+      "StackOutput": null
+    }
+  ],
+  "Events": [
+    {
+      "Id": 0,
+      "Event": "FAIL",
+      "Result": false,
+      "Type": 1
+    },
+    {
+      "Id": 1,
+      "Event": "FAIL",
+      "Result": false,
+      "Type": 1
+    },
+    {
+      "Id": 2,
+      "Event": "FAIL",
+      "Result": false,
+      "Type": 1
+    },
+    {
+      "Id": 2,
+      "Event": "{payReturnCode} == 0",
+      "Result": true,
+      "Type": 0
+    }
+  ]
+}

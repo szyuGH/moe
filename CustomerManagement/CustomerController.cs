@@ -12,14 +12,17 @@ namespace CustomerManagement
     {
         private static ConcurrentBag<Customer> customers = new ConcurrentBag<Customer>()
         {
-            new Customer(){ Id=Guid.Parse("ee267d00-afa6-4947-a567-492025a2e814"), Email="a@b.c", Name="Hans", Pin="1234" } 
+            new Customer(){ Id=Guid.Parse("ee267d00-afa6-4947-a567-492025a2e814"), Email="a@b.c", Name="Hans", Pin="1234", Iban="DE1234567890" } 
         };
 
 
         [HttpPost("Auth")]
-        public bool Authenticate([FromBody] AuthenticateDataBind db)
+        public string Authenticate([FromBody] AuthenticateDataBind db)
         {
-            return customers.FirstOrDefault(c => c.Id.Equals(db.Id))?.Pin == db.Pin;
+            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.Id));
+            if (customer?.Pin != db.Pin)
+                return null;
+            return customer.Iban;
         }
 
         [HttpPost("UpdateOrders")]
@@ -46,6 +49,7 @@ namespace CustomerManagement
             public string Name;
             public string Email;
             public int Orders = 0;
+            public string Iban;
         }
 
 
