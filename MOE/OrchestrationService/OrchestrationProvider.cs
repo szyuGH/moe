@@ -47,6 +47,7 @@ namespace MOE.OrchestrationService
                 try
                 {
                     Orchestrator o = JsonConvert.DeserializeObject<Orchestrator>(File.ReadAllText(osFile));
+                    o.ServiceCalls.Sort((s1, s2) => s1.Id.CompareTo(s2.Id));
                     if (!orchestrators.ContainsKey(o.Name) || !orchestrators[o.Name].Version.Equals(o.Version))
                     {
                         orchestrators[o.Name] = o;
@@ -68,9 +69,9 @@ namespace MOE.OrchestrationService
             OrchestrationStream oStream = new OrchestrationStream(orchestrators[orchestratorName], args);
             currentStreams.Add(oStream);
 
+            oStream.Run();
 
-
-            throw new NotImplementedException();
+            return oStream.Result;
         }
         
     }

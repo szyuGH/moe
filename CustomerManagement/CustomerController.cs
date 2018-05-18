@@ -19,18 +19,21 @@ namespace CustomerManagement
         [HttpPost("Auth")]
         public string Authenticate([FromBody] AuthenticateDataBind db)
         {
-            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.Id));
-            if (customer?.Pin != db.Pin)
+            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.CId));
+            if (customer == null || customer.Pin != db.Pin)
+            {
+                HttpContext.Response.StatusCode = 400;
                 return null;
+            }
             return customer.Iban;
         }
 
         [HttpPost("UpdateOrders")]
         public int UpdateOrders([FromBody] UpdateOrdersDataBind db)
         {
-            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.Id));
+            Customer customer = customers.FirstOrDefault(c => c.Id.Equals(db.CId));
             if (customer == null) return -1;
-            customer.Orders += db.Amount;
+            customer.Orders += db.OrderCount;
             return customer.Orders;
         }
 
@@ -55,19 +58,19 @@ namespace CustomerManagement
 
         public struct AuthenticateDataBind
         {
-            public Guid Id;
+            public Guid CId;
             public string Pin;
         }
 
         public struct UpdateOrdersDataBind
         {
-            public Guid Id;
-            public int Amount;
+            public Guid CId;
+            public int OrderCount;
         }
 
         public struct BonusDataBind
         {
-            public Guid Id;
+            public Guid CId;
         }
     }
 }
