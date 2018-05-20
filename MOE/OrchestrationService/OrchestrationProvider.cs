@@ -62,14 +62,14 @@ namespace MOE.OrchestrationService
             }
         }
 
-        public object Start(string orchestratorName, Dictionary<string, object> args)
+        public async Task<object> Start(string orchestratorName, Dictionary<string, object> args)
         {
             if (!orchestrators.ContainsKey(orchestratorName))
                 return null;
             OrchestrationStream oStream = new OrchestrationStream(orchestrators[orchestratorName], args);
             currentStreams.Add(oStream);
 
-            oStream.Run();
+            await oStream.Run();
 
             return oStream.Result;
         }

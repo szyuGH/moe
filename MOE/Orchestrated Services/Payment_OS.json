@@ -1,11 +1,11 @@
 ﻿{
   "Name": "Payment_OS",
   "Version":  "1.0.0.0",
-  "OutputType": "System.Boolean, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e",
+  "OutputType": "System.Boolean",
   "Input": {
     "cid": "System.String",
     "pin": "System.String",
-    "discountCount": "System.String",
+    "discountCode": "System.String",
     "price": "System.Single",
     "orderCount": "System.Int32"
   },
@@ -66,12 +66,6 @@
       "Type": 1
     },
     {
-      "Id": 1,
-      "Event": "FAIL",
-      "Result": false,
-      "Type": 1
-    },
-    {
       "Id": 2,
       "Event": "FAIL",
       "Result": false,
@@ -79,7 +73,7 @@
     },
     {
       "Id": 2,
-      "Event": "{payReturnCode} == 0",
+      "Event": "${payReturnCode} == 0:System.Int32$",
       "Result": true,
       "Type": 0
     }

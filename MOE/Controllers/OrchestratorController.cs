@@ -20,14 +20,14 @@ namespace MOE.Controllers
         [HttpPost("Start")]
         public object StartOrchestrator([FromBody] StartOrchestratorDataBinding db)
         {
-            return orchestrationProvider.Start(db.Name, db.Args);
+            return orchestrationProvider.Start(db.Name, db.Input).Result;
         }
 
 
         public struct StartOrchestratorDataBinding
         {
             public string Name;
-            public Dictionary<string, object> Args;
+            public Dictionary<string, object> Input;
         }
     }
 }

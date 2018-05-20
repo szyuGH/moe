@@ -4,9 +4,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MOE
 {
@@ -31,7 +34,7 @@ namespace MOE
             
         }
         
-        public async void Run()
+        public async Task<object> Run()
         {
             foreach (ServiceCall sc in Definition.ServiceCalls)
             {
@@ -85,8 +88,80 @@ namespace MOE
                         else
                             stack[sc.StackOutput.Item1] = Convert.ChangeType(responseString, Type.GetType(sc.StackOutput.Item2), CultureInfo.InvariantCulture);
                     }
-                } // TODO: Error management
+                } 
+                
+                foreach (OrchestrationEvent ev in Definition.Events.Where(e => e.Id == sc.Id))
+                {
+                    bool conditionMet = false;
+                    if (ev.Event == "FAIL")
+                    {
+                        conditionMet = statusCode != HttpStatusCode.OK;
+                    } else if (ev.Event.StartsWith('$') && ev.Event.EndsWith('$'))
+                    {
+                        Match match = Regex.Match(ev.Event, @"\$(.+)\s*(={2}|>=|<=|<|>|!=)\s*(.+)\$");
+                        if (match.Success)
+                        {
+                            Type leftType;
+                            Type rightType;
+                            object left = match.Groups[1].Value.Trim();
+                            object op = match.Groups[2].Value.Trim();
+                            object right = match.Groups[3].Value.Trim();
+
+                            if ((left as string).StartsWith('{') && (left as string).EndsWith('}'))
+                            {
+                                left = stack[(left as string).Substring(1, (left as string).Length - 2)];
+                                leftType = left.GetType();
+                            } else
+                            {
+                                string[] split = (left as string).Split(':');
+                                leftType = Type.GetType(split[1]);
+                                left = Convert.ChangeType(split[0], leftType);
+                            }
+                            if ((right as string).StartsWith('{') && (right as string).EndsWith('}'))
+                            {
+                                right = stack[(right as string).Substring(1, (right as string).Length - 2)];
+                                rightType = right.GetType();
+                            } else
+                            {
+                                string[] split = (right as string).Split(':');
+                                rightType = Type.GetType(split[1]);
+                                right = Convert.ChangeType(split[0], rightType);
+                            }
+                            switch (op)
+                            {
+                                case "==": conditionMet = left.Equals(right);
+                                    break;
+                                case ">=":
+                                    conditionMet = (left is IComparable && right is IComparable) ? (left as IComparable).CompareTo(right as IComparable) >= 0 : false;
+                                    break;
+                                case "<=":
+                                    conditionMet = (left is IComparable && right is IComparable) ? (left as IComparable).CompareTo(right as IComparable) <= 0 : false;
+                                    break;
+                                case "!=":
+                                    conditionMet = !left.Equals(right);
+                                    break;
+                                case "<":
+                                    conditionMet = (left is IComparable && right is IComparable) ? (left as IComparable).CompareTo(right as IComparable) < 0 : false;
+                                    break;
+                                case ">":
+                                    conditionMet = (left is IComparable && right is IComparable) ? (left as IComparable).CompareTo(right as IComparable) > 0 : false;
+                                    break;
+                            }
+                        }
+                    }
+
+                    if (conditionMet)
+                    {
+                        Result = Convert.ChangeType(ev.Result, Definition.OutputType);
+                        if (ev.Type == OrchestrationEvent.ResultEventType.RETURN)
+                        {
+                            return Result;
+                        }
+                    }
+                }
             }
+
+            return Result;
         }
 
         private string StackValToBodyParam(object o)

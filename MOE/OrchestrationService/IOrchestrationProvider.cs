@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MOE.OrchestrationService
 {
@@ -8,6 +9,6 @@ namespace MOE.OrchestrationService
     {
         IEnumerable<string> GetAll();
         void Reload();
-        object Start(string orchestratorName, Dictionary<string, object> args);
+        Task<object> Start(string orchestratorName, Dictionary<string, object> args);
     }
 }
