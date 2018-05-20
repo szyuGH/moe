@@ -55,19 +55,21 @@ namespace CustomerManagement
             public string Iban;
         }
 
-
+        [Serializable]
         public struct AuthenticateDataBind
         {
             public Guid CId;
             public string Pin;
         }
 
+        [Serializable]
         public struct UpdateOrdersDataBind
         {
             public Guid CId;
             public int OrderCount;
         }
 
+        [Serializable]
         public struct BonusDataBind
         {
             public Guid CId;

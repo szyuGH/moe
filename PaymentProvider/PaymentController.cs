@@ -19,7 +19,7 @@ namespace PaymentProvider
             return 0;
         }
 
-
+        [Serializable]
         public struct PayDataBind
         {
             public string Iban;
