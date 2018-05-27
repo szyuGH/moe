@@ -16,6 +16,8 @@ namespace CustomerManagement
         };
 
 
+
+
         [HttpPost("Auth")]
         public string Authenticate([FromBody] AuthenticateDataBind db)
         {
@@ -28,6 +30,8 @@ namespace CustomerManagement
             return customer.Iban;
         }
 
+
+
         [HttpPost("UpdateOrders")]
         public int UpdateOrders([FromBody] UpdateOrdersDataBind db)
         {
@@ -37,6 +41,8 @@ namespace CustomerManagement
             return customer.Orders;
         }
 
+
+
         [HttpPost("Bonus")]
         public void Bonus([FromBody]BonusDataBind db)
         {
@@ -44,7 +50,7 @@ namespace CustomerManagement
             // write mail when met
         }
 
-
+        #region DataBindings
         class Customer
         {
             public Guid Id;
@@ -74,5 +80,6 @@ namespace CustomerManagement
         {
             public Guid CId;
         }
+        #endregion
     }
 }

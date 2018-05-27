@@ -16,7 +16,7 @@ namespace MOE.Controllers
             orchestrationProvider = _orchestrationProvider;
         }
 
-
+        
         [HttpPost("Start")]
         public OrchestrationResult StartOrchestrator([FromBody] StartOrchestratorDataBinding db)
         {
@@ -26,6 +26,7 @@ namespace MOE.Controllers
             };
         }
 
+        #region DataBindings
         [Serializable]
         public struct StartOrchestratorDataBinding
         {
@@ -39,5 +40,6 @@ namespace MOE.Controllers
         {
             public object Result;
         }
+        #endregion
     }
 }

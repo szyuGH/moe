@@ -15,12 +15,12 @@ namespace DiscountConnector
             {"AAAAEEEE", 0.5f },
             {"EEEEDDDD", 0.2f }
         };
+
         
         [HttpGet("{code}/{price}")]
         public float GetDiscount(string code, float price)
         {
             return price - price * discounts.FirstOrDefault(d => d.Key == code).Value;
         }
-
     }
 }
